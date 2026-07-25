@@ -17,9 +17,11 @@ produce duplicate alerts.
 The Varna booking URL and `Наразі всі місця зайняті.` marker are already the
 defaults. `WATCH_URL` and `EMPTY_TEXT` can still override them later.
 
-Load `.env` and run:
+Install the project into your virtual environment, load `.env`, and run:
 
 ```bash
+source .venv/bin/activate
+pip install -e .
 set -a
 . ./.env
 set +a
@@ -27,7 +29,7 @@ python3 -m slot_watch.app
 ```
 
 Available commands are `/status` and `/check`. Messages from IDs outside the
-hardcoded allowlist are ignored.
+configured allowlist are ignored.
 
 ## Keep it running
 
@@ -39,10 +41,14 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now slot-watch
 ```
 
-## Limitation
+## Firefox session
 
-The site may return a Cloudflare challenge to server or datacenter IP addresses.
-This is treated as a check error and cannot create a false slot alert. If the machine
-running the bot is challenged, open the page in a browser on that same machine and
-network, then set `PAGE_COOKIE` to its Cookie request header (including the
-`cf_clearance` value) and set `USER_AGENT` to that browser's exact user-agent.
+The bot opens a visible Firefox window and keeps it running with a dedicated
+profile in `.firefox-profile`. On the first launch, complete any Cloudflare prompt
+in that window. The bot waits up to `CHALLENGE_TIMEOUT_SECONDS` for the booking
+page and reuses the resulting browser session and cookies for later checks. Do not
+close the window while the bot is running.
+
+A visible browser requires a graphical desktop session. The example systemd unit
+needs access to that session's `DISPLAY` and X authorization; foreground execution
+is the simplest initial setup.

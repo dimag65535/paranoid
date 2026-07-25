@@ -19,9 +19,11 @@ class Config:
     required_text: str
     interval_seconds: int
     jitter_seconds: int
-    request_timeout_seconds: int
-    user_agent: str
-    page_cookie: str
+    page_load_timeout_seconds: int
+    challenge_timeout_seconds: int
+    firefox_binary: str
+    geckodriver_path: str
+    browser_profile_dir: Path
     state_file: Path
 
     @classmethod
@@ -36,14 +38,22 @@ class Config:
             ).strip(),
             interval_seconds=_positive_int("CHECK_INTERVAL_SECONDS", 300),
             jitter_seconds=_nonnegative_int("CHECK_JITTER_SECONDS", 180),
-            request_timeout_seconds=_positive_int("REQUEST_TIMEOUT_SECONDS", 30),
-            user_agent=os.getenv(
-                "USER_AGENT",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                "Chrome/126 Safari/537.36",
+            page_load_timeout_seconds=_positive_int(
+                "PAGE_LOAD_TIMEOUT_SECONDS", 30
+            ),
+            challenge_timeout_seconds=_positive_int(
+                "CHALLENGE_TIMEOUT_SECONDS", 120
+            ),
+            firefox_binary=os.getenv(
+                "FIREFOX_BINARY", "/snap/firefox/current/usr/lib/firefox/firefox"
+            ).strip(),
+            geckodriver_path=os.getenv(
+                "GECKODRIVER_PATH", "/snap/bin/geckodriver"
+            ).strip(),
+            browser_profile_dir=Path(
+                os.getenv("BROWSER_PROFILE_DIR", ".firefox-profile")
             ),
             state_file=Path(os.getenv("STATE_FILE", "state.json")),
-            page_cookie=os.getenv("PAGE_COOKIE", "").strip(),
         )
         return config
 

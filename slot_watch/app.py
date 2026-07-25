@@ -22,9 +22,11 @@ class Application:
             config.watch_url,
             config.empty_text,
             config.required_text,
-            config.request_timeout_seconds,
-            config.user_agent,
-            config.page_cookie,
+            config.page_load_timeout_seconds,
+            config.challenge_timeout_seconds,
+            config.browser_profile_dir,
+            config.firefox_binary,
+            config.geckodriver_path,
         )
         self.state = load_state(config.state_file)
         self.stop_event = threading.Event()
@@ -39,13 +41,16 @@ class Application:
         listener.start()
         LOG.info("Watching %s", self.config.watch_url)
 
-        while not self.stop_event.is_set():
-            self.check_once()
-            delay = self.config.interval_seconds + random.uniform(
-                0, self.config.jitter_seconds
-            )
-            LOG.info("Next check in %.0f seconds", delay)
-            self.stop_event.wait(delay)
+        try:
+            while not self.stop_event.is_set():
+                self.check_once()
+                delay = self.config.interval_seconds + random.uniform(
+                    0, self.config.jitter_seconds
+                )
+                LOG.info("Next check in %.0f seconds", delay)
+                self.stop_event.wait(delay)
+        finally:
+            self.checker.close()
 
     def check_once(self) -> None:
         if not self.check_lock.acquire(blocking=False):

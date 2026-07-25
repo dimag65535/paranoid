@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from slot_watch.checker import PageChecker
 
 
@@ -6,8 +8,11 @@ def make_checker() -> PageChecker:
         url="https://example.com",
         empty_text="Наразі всі місця зайняті.",
         required_text="Електронна черга за адресою Варна",
-        timeout_seconds=5,
-        user_agent="test",
+        page_load_timeout_seconds=5,
+        challenge_timeout_seconds=5,
+        profile_dir=Path(".test-firefox-profile"),
+        firefox_binary="",
+        geckodriver_path="",
     )
 
 

@@ -7,7 +7,7 @@ Wants=network-online.target
 Type=simple
 WorkingDirectory=/opt/slot-watch
 EnvironmentFile=/opt/slot-watch/.env
-ExecStart=/usr/bin/python3 -m slot_watch.app
+ExecStart=/opt/slot-watch/.venv/bin/python -m slot_watch.app
 Restart=always
 RestartSec=10
 
