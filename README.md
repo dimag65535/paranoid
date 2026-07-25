@@ -10,8 +10,9 @@ produce duplicate alerts.
 1. Create a bot with Telegram's `@BotFather` and get its token.
 2. Get your numeric Telegram user ID (for example, from Telegram's
    `@userinfobot`).
-3. Replace `0` in `AUTHORIZED_USER_IDS` in `slot_watch/config.py`.
-4. Copy `.env.example` to `.env` and set the bot token.
+3. Copy `.env.example` to `.env`.
+4. Set `TELEGRAM_BOT_TOKEN` and your numeric ID in
+   `TELEGRAM_ALLOWED_USER_IDS`. Multiple IDs are comma-separated.
 
 The Varna booking URL and `Наразі всі місця зайняті.` marker are already the
 defaults. `WATCH_URL` and `EMPTY_TEXT` can still override them later.

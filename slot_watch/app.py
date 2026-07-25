@@ -7,7 +7,7 @@ import threading
 from datetime import datetime
 
 from slot_watch.checker import PageChecker
-from slot_watch.config import AUTHORIZED_USER_IDS, Config
+from slot_watch.config import Config
 from slot_watch.state import WatchState, load_state, save_state
 from slot_watch.telegram import Telegram
 
@@ -85,7 +85,7 @@ class Application:
             self.check_lock.release()
 
     def _broadcast(self, text: str) -> None:
-        for user_id in AUTHORIZED_USER_IDS:
+        for user_id in self.config.allowed_user_ids:
             self.telegram.send_message(user_id, text)
 
     def _listen_for_commands(self) -> None:
@@ -105,7 +105,10 @@ class Application:
         sender_id = message.get("from", {}).get("id")
         chat_id = message.get("chat", {}).get("id")
         text = message.get("text", "").split("@", 1)[0].split(maxsplit=1)[0]
-        if sender_id not in AUTHORIZED_USER_IDS or not isinstance(chat_id, int):
+        if (
+            sender_id not in self.config.allowed_user_ids
+            or not isinstance(chat_id, int)
+        ):
             LOG.warning("Ignored unauthorized Telegram user %s", sender_id)
             return
 
