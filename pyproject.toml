@@ -1,0 +1,11 @@
+[project]
+name = "slot-watch-bot"
+version = "0.1.0"
+description = "Private Telegram bot that watches a booking page for available slots"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

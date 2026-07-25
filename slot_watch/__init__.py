@@ -1,0 +1,1 @@
+"""Private booking-slot watcher."""
