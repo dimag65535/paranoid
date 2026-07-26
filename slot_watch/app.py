@@ -9,7 +9,7 @@ from datetime import datetime
 from slot_watch.checker import PageChecker
 from slot_watch.config import Config
 from slot_watch.state import WatchState, load_state, save_state
-from slot_watch.telegram import Telegram
+from slot_watch.telegram import Telegram, TelegramNetworkError
 
 LOG = logging.getLogger("slot_watch")
 
@@ -101,6 +101,9 @@ class Application:
                 for update in updates:
                     offset = update["update_id"] + 1
                     self._handle_update(update)
+            except TelegramNetworkError as error:
+                LOG.warning("Telegram polling network error: %s; retrying", error)
+                self.stop_event.wait(5)
             except Exception:
                 LOG.exception("Telegram polling failed")
                 self.stop_event.wait(5)
